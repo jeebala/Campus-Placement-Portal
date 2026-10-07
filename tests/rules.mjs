@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { eligibility, canTransition } from '../lib/rules.ts';
+const profile={branch:'CSE',cgpa:8.5,graduation_year:2027,resume:'https://example.com/resume'};
+const job={min_cgpa:8,departments:JSON.stringify(['CSE','IT']),graduation_year:2027,deadline:'2026-11-15'};
+const now=new Date('2026-10-06');
+test('eligible student may apply and CGPA boundary is inclusive',()=>{assert.deepEqual(eligibility(profile,job,now),[]);assert.deepEqual(eligibility({...profile,cgpa:8},job,now),[]);});
+test('eligibility explains CGPA, department, cohort, resume, and deadline failures',()=>{const reasons=eligibility({...profile,cgpa:6,branch:'MECH',graduation_year:2028,resume:''},{...job,deadline:'2026-09-01'},now);assert.equal(reasons.length,5);assert.match(reasons[0],/minimum CGPA of 8.0/);assert.match(reasons[1],/MECH/);});
+test('missing profile blocks submissions',()=>assert.equal(eligibility(null,job,now).length,1));
+test('pipeline prevents skipping stages and changing final decisions',()=>{assert.equal(canTransition('Applied','Shortlisted'),true);assert.equal(canTransition('Applied','Offered'),false);assert.equal(canTransition('Interview','Offered'),true);assert.equal(canTransition('Offered','Rejected'),false);assert.equal(canTransition('Rejected','Applied'),false);for(const s of ['Applied','Shortlisted','Interview'])assert.equal(canTransition(s,'Rejected'),true);});

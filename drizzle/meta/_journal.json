@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791269521513,
+      "tag": "0000_workable_ulik",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791270483932,
+      "tag": "0001_magenta_catseye",
+      "breakpoints": true
+    }
+  ]
+}
